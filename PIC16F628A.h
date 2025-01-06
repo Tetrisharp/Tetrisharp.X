@@ -17,10 +17,13 @@
 #pragma config PWRTE = OFF      // Power-up Timer Enable bit (Power-up Timer is disabled)
 #pragma config CP = OFF         // Code Protection bit (Code protection disabled)
 
+void usart_print_char(const char);
 void usart_printf(const char[]);
+void usart_print_piece();
+void usart_print_int(int);
 void init_chip();
 
-void render();
+//void render();
 
 #endif	
 

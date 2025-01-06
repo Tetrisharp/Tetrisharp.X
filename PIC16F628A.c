@@ -2,45 +2,27 @@
 #include "PlayField.h"
 #include <string.h>
 
-
+void usart_print_char(const char msg)
+{
+    TXIF = 0;
+    TXREG = msg;
+    while(TXIF == 0);
+}
 
 void usart_printf(const char msg[])
 {
     for (int i = 0; i< strlen(msg); i++)
     {
-        TXIF = 0;
-        TXREG = msg[i];
-        while(TXIF == 0);
+        usart_print_char(msg[i]);
     }
 }
 
-void render()
+void usart_print_int(int num)
 {
-    usart_printf("\tlines:500\r\n");
-    usart_printf("|----------------------|\r\n");
-    
-    for (int y = 0; y < 20; y++)
-    {
-        usart_printf("| ");//
-        
-        for (int x = 512; x > 0; x>>=1)
-        {
-            int b = field_blocks[y]&x;
-
-            if (b==0)
-            {
-                usart_printf("  ");
-            }
-            else
-            {
-                usart_printf("()");
-            }
-        }
-        
-        usart_printf(" |\r\n");
-    }
-    usart_printf("|______________________|\r\n");
+    usart_print_char(num+48);
 }
+
+
 
 void init_chip()
 {

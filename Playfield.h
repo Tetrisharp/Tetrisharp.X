@@ -19,9 +19,6 @@ typedef struct {
     int color;
 } Tetramino;
 
-
-static Tetramino piece;
-
 void DrawThePiece();
 
 void weldTheBlocks(Tetramino);
