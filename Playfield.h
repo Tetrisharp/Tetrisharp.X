@@ -19,11 +19,11 @@ typedef struct {
     int color;
 } Tetramino;
 
-void DrawThePiece();
+//void DrawThePiece();
 
-void weldTheBlocks(Tetramino);
-void RemoveLine(int);
-void FallingDown(int);
+//void weldTheBlocks(Tetramino);
+//void RemoveLine(int);
+//void FallingDown(int);
 
 //bool OverFlow();
 //bool HaveEdgesOnRight(Tetramino);

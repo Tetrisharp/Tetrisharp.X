@@ -16,10 +16,13 @@ void usart_print_piece();
 void render();
 void gravity();
 void WeldTheBlocks();
+void VerificarLinhasCompletas();
+int OverFlow();
 void DrawThePiece();
 
 void main(void)
 {
+    srand(time(NULL)); //semente do random
     init_chip();
     
     do //loop infinito
@@ -34,10 +37,10 @@ void main(void)
             
         }while(!have_colision);;
         
+        VerificarLinhasCompletas();
         
-        
-    }while(1);
-    
+    }while(!OverFlow());
+    usart_printf("=========== GAME  OVER ===========\r\n");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +56,27 @@ void usart_print_piece()
         usart_print_char(')');
     }       
     usart_printf("\r\n");
+}
+
+
+void VerificarLinhasCompletas()
+{
+    for (int y = 0; y < 20; y++)
+    {
+        if (field_blocks[y] == 1023)
+        {
+            for (int f = y; f >= 0; f--)
+            {
+                if(f==0) field_blocks[f] = 0;
+                else field_blocks[f] = field_blocks[f-1];
+            }
+        }        
+    }    
+}
+
+int OverFlow()
+{
+    return (field_blocks[0] & 1023);
 }
 
 void WeldTheBlocks(){
@@ -132,13 +156,15 @@ void render()
 }
 
 void DrawThePiece()
-{
-    srand(time(NULL));
-    int x = (int)(rand()) % 7;
+{    
     Block block1;    
     Block block2; 
     Block block3;    
     Block block4;
+        
+    int teste = rand();
+    int TESTE2 = teste % 7;
+    int x = (int)(rand()) % 7;
     
     switch(x) {
         case 0:
