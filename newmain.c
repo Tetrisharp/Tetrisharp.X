@@ -10,48 +10,34 @@
 #include "PlayField.h"
 
 static Tetramino piece;
+static int have_colision;
 
 void usart_print_piece();
 void render();
+void gravity();
+void WeldTheBlocks();
 void DrawThePiece();
 
 void main(void)
 {
     init_chip();
     
-    do //
+    do //loop infinito
     {
-        //have_colision = 0;
+        have_colision = 0;
         DrawThePiece();
-        __delay_ms(1);
-        //do
-        //{
-            //__delay_ms(1000);
-        //}while(1);;
+        do
+        {
+            render();
+            gravity();
+            __delay_ms(1000);
+            
+        }while(!have_colision);;
         
-        render();
+        
         
     }while(1);
     
-    /*char resposta = 0;    
-    while(1)//loop principal
-    {
-        usart_printf(".");
-        
-        if (RCIF)
-        {
-            resposta = RCREG;
-            usart_printf("\n\r Caratere digitado: ");
-            
-            TXIF = 0;
-            TXREG = resposta;
-            while(TXIF == 0);
-            RCIF = 0;
-        }
-        
-        TRISBbits.TRISB5 = ~TRISBbits.TRISB5;   //inverte estado l�gico do pino do LED
-        __delay_ms(1000);                         //aguarda 1 seg
-    }*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,13 +55,49 @@ void usart_print_piece()
     usart_printf("\r\n");
 }
 
+void WeldTheBlocks(){
+    for (int i=0;i<4;i++) //para cada bloco
+    {
+        int posicaoY = piece.blocks[i].YPosition;
+        int posicaoX = 512 >> piece.blocks[i].XPosition;
+        
+        field_blocks[posicaoY] |= posicaoX;        
+    }
+}
+
+void gravity()
+{
+    for (int i=0;i<4;i++) //para cada bloco
+    {
+        int novaPosicaoY = piece.blocks[i].YPosition + 1;
+        int posicaoX = 512 >> piece.blocks[i].XPosition;
+        
+        if (novaPosicaoY>=20) have_colision = 1;
+        if ((field_blocks[novaPosicaoY] & posicaoX)!= 0) have_colision = 1;
+    }
+    
+    if (have_colision)
+    {
+        WeldTheBlocks();
+        //beep;
+    }
+    else
+    {
+        for (int i=0;i<4;i++) piece.blocks[i].YPosition++;
+    }    
+}
+
 void render()
 {
     //usart_print_int(1);
-    usart_print_piece();
-    usart_printf("\tlines:500\r\n");
+    //usart_print_piece();
+    usart_printf("\t     lines:");
+    usart_print_int(5);
+    usart_print_int(0);
+    usart_print_int(0);
+    usart_printf("\r\n");
     
-    usart_printf("|----------------------|\r\n");
+    usart_printf("|--------------------------------|\r\n");
     
     for (int y = 0; y < 20; y++)
     {
@@ -91,20 +113,22 @@ void render()
                ||((piece.blocks[1].XPosition == x) && (piece.blocks[1].YPosition == y))
                ||((piece.blocks[2].XPosition == x) && (piece.blocks[2].YPosition == y))
                ||((piece.blocks[3].XPosition == x) && (piece.blocks[3].YPosition == y)))
-            {
-                usart_printf("()");
+            {                
+                usart_print_char('(');
+                usart_print_int(piece.color);
+                usart_print_char(')');
             }
             else
             {
-                if (b==0) usart_printf("  ");
-                else usart_printf("()");
+                if (b==0) usart_printf("   ");
+                else usart_printf("(0)");
             }            
 
         }
         
         usart_printf(" |\r\n");
     }
-    usart_printf("|______________________|\r\n");
+    usart_printf("|________________________________|\r\n");
 }
 
 void DrawThePiece()
@@ -118,49 +142,49 @@ void DrawThePiece()
     
     switch(x) {
         case 0:
-            piece.color = 2; //  |_|_|_|_|           
+            piece.color = 1; //  |_|_|_|_|           
             block1.XPosition = 5; block1.YPosition = 0;
             block2.XPosition = 5; block2.YPosition = 1;
             block3.XPosition = 5; block3.YPosition = 2;
             block4.XPosition = 5; block4.YPosition = 3;    
             break;
         case 1:              //    |_|
-            piece.color = 1; //  |_|_|_|             
+            piece.color = 2; //  |_|_|_|             
             block1.XPosition = 5; block1.YPosition = 0;
             block2.XPosition = 5; block2.YPosition = 1;
             block3.XPosition = 5; block3.YPosition = 2;
             block4.XPosition = 5; block4.YPosition = 3;   
             break;
         case 2:              //    |_|_|
-            piece.color = 1; //    |_|_|           
+            piece.color = 3; //    |_|_|           
             block1.XPosition = 5; block1.YPosition = 0;
             block2.XPosition = 5; block2.YPosition = 1;
             block3.XPosition = 5; block3.YPosition = 2;
             block4.XPosition = 5; block4.YPosition = 3;    
             break;
         case 3:              //  |_|
-            piece.color = 1; //  |_|_|_|            
+            piece.color = 4; //  |_|_|_|            
             block1.XPosition = 5; block1.YPosition = 0;
             block2.XPosition = 5; block2.YPosition = 1;
             block3.XPosition = 5; block3.YPosition = 2;
             block4.XPosition = 5; block4.YPosition = 3;        
             break;
         case 4:              //      |_|    
-            piece.color = 1; //  |_|_|_|           
+            piece.color = 5; //  |_|_|_|           
             block1.XPosition = 5; block1.YPosition = 0;
             block2.XPosition = 5; block2.YPosition = 1;
             block3.XPosition = 5; block3.YPosition = 2;
             block4.XPosition = 5; block4.YPosition = 3;   
             break;
         case 5:              //  |_|_|
-            piece.color = 1; //    |_|_|           
+            piece.color = 6; //    |_|_|           
             block1.XPosition = 5; block1.YPosition = 0;
             block2.XPosition = 5; block2.YPosition = 1;
             block3.XPosition = 5; block3.YPosition = 2;
             block4.XPosition = 5; block4.YPosition = 3;       
             break;
         case 6:              //    |_|_|
-            piece.color = 1; //  |_|_|           
+            piece.color = 7; //  |_|_|           
             block1.XPosition = 5; block1.YPosition = 0;
             block2.XPosition = 5; block2.YPosition = 1;
             block3.XPosition = 5; block3.YPosition = 2;
