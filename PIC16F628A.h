@@ -7,7 +7,7 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-#define _XTAL_FREQ 1000000      //define para utilizar fun��es de tempo
+#define _XTAL_FREQ 4000000      //define para utilizar fun��es de tempo
 #define __delay_us(x) _delay((unsigned long)((x)*(_XTAL_FREQ/4000000.0)))
 #define __delay_ms(x) _delay((unsigned long)((x)*(_XTAL_FREQ/4000.0)))
 

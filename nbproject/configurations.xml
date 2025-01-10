@@ -30,7 +30,7 @@
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <targetDevice>PIC16LF648A</targetDevice>
-        <targetHeader></targetHeader>
+        <targetHeader>AC162053</targetHeader>
         <targetPluginBoard></targetPluginBoard>
         <platformTool>Simulator</platformTool>
         <languageToolchain>XC8</languageToolchain>
@@ -192,9 +192,9 @@
         <property key="uart0io.output" value="window"/>
         <property key="uart0io.outputfile" value=""/>
         <property key="uart0io.uartioenabled" value="false"/>
-        <property key="uart1io.output" value="file"/>
+        <property key="uart1io.output" value="window"/>
         <property key="uart1io.outputfile" value="uart.txt"/>
-        <property key="uart1io.uartioenabled" value="true"/>
+        <property key="uart1io.uartioenabled" value="false"/>
         <property key="uart2io.output" value="window"/>
         <property key="uart2io.outputfile" value=""/>
         <property key="uart2io.uartioenabled" value="false"/>
@@ -667,9 +667,9 @@
         <property key="uart0io.output" value="window"/>
         <property key="uart0io.outputfile" value=""/>
         <property key="uart0io.uartioenabled" value="false"/>
-        <property key="uart1io.output" value="file"/>
+        <property key="uart1io.output" value="window"/>
         <property key="uart1io.outputfile" value="uart.txt"/>
-        <property key="uart1io.uartioenabled" value="true"/>
+        <property key="uart1io.uartioenabled" value="false"/>
         <property key="uart2io.output" value="window"/>
         <property key="uart2io.outputfile" value=""/>
         <property key="uart2io.uartioenabled" value="false"/>

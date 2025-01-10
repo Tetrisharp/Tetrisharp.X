@@ -16,16 +16,21 @@ void usart_print_piece();
 void render();
 void gravity();
 void WeldTheBlocks();
-void VerificarLinhasCompletas();
+void verify_full_lines();
 int OverFlow();
 void DrawThePiece();
+void AguardaTeclas();
+void moveDown();
+void moveLeft();
+void moveRight();
+void Rotate();
 
 void main(void)
 {
     srand(time(NULL)); //semente do random
     init_chip();
     
-    do //loop infinito
+    do
     {
         have_colision = 0;
         DrawThePiece();
@@ -33,14 +38,22 @@ void main(void)
         {
             render();
             gravity();
-            __delay_ms(1000);
+            int timeout=0;
+            do{
+                AguardaTeclas();
+                __delay_ms(200);
+                timeout++;
+            }while(timeout==5);
+            
+            
             
         }while(!have_colision);;
         
-        VerificarLinhasCompletas();
+        verify_full_lines();
         
     }while(!OverFlow());
     usart_printf("=========== GAME  OVER ===========\r\n");
+    while(1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,8 +71,7 @@ void usart_print_piece()
     usart_printf("\r\n");
 }
 
-
-void VerificarLinhasCompletas()
+void verify_full_lines()
 {
     for (int y = 0; y < 20; y++)
     {
@@ -224,4 +236,75 @@ void DrawThePiece()
     piece.blocks[1]= block2;
     piece.blocks[2]= block3;            
     piece.blocks[3]= block4;
+}
+
+void AguardaTeclas()
+{
+    if (PORTBbits.RB0 == 1) ;//gravity();
+    if (PORTBbits.RB1 == 1) moveLeft();
+    if (PORTBbits.RB2 == 1) moveRight();    
+    if (PORTBbits.RB3 == 1) Rotate();  
+}
+
+void moveLeft()
+{
+    for (int i=0;i<4;i++)
+    {
+        int posX = 1024 >> piece.blocks[i].XPosition;
+        posX <<= 1;
+        
+        int wall = posX & field_blocks[piece.blocks[i].YPosition];
+        
+        if ((posX>=2048)||(wall==posX))
+        {            
+            //beep();)
+        }
+        else piece.blocks[i].XPosition--;
+    }    
+}    
+
+void moveRight()
+{
+    for (int i=0;i<4;i++)
+    {
+        int posX = 1024 >> piece.blocks[i].XPosition;
+        posX >>= 1;
+        
+        int wall = posX & field_blocks[piece.blocks[i].YPosition];
+        
+        if ((posX<=1)||(wall==posX))
+        {            
+            //beep();        
+        }
+        else piece.blocks[i].XPosition++;
+    }
+}
+
+void Rotate()
+{
+    int minX = 99; 
+    int minY = 99;
+    int maxX = -1; 
+    int maxY = -1;
+
+    for (int i=0;i<4;i++)
+    {
+        if ( minY > piece.blocks[i].YPosition) minY = piece.blocks[i].YPosition;
+        if ( maxY < piece.blocks[i].YPosition) maxY = piece.blocks[i].YPosition;
+
+        if ( minX > piece.blocks[i].XPosition) minX = piece.blocks[i].XPosition;
+        if ( maxX < piece.blocks[i].XPosition) maxX = piece.blocks[i].XPosition;        
+    }
+
+    int axisX = (maxX + minX) / 2;
+    int axisY = (maxY + minY) / 2;
+
+    for (int i=0;i<4;i++)
+    {
+        int oldX = piece.blocks[i].XPosition;
+        int oldY = piece.blocks[i].YPosition;
+
+        piece.blocks[i].XPosition = (axisX - axisY + oldY);
+        piece.blocks[i].YPosition = (axisX + axisY - oldX);
+    }
 }

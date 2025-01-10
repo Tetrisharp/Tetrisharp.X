@@ -28,9 +28,11 @@ void init_chip()
 {
     PORTA = 0x00;
     TRISA = 0x1F;    
-    PORTB = 0x00;
+    PORTB = 0x0F;
     TRISB = 0xDF;    
     CMCON = 0x07;
+    
+    OPTION_REGbits.nRBPU = 0; // Habilita resistores de pull-up
     
     TXSTAbits.TXEN = 1; //habilita transmissao
     TXSTAbits.BRGH = 1; //high speed
